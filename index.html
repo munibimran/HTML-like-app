@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+<title>QuranApp</title>
+<!-- Bootstrap core CSS -->
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<!-- Just for debugging purposes. Don't actually copy this line! -->
+<!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<style>
+body {
+padding-top: 70px;
+}
+footer {
+padding: 30px 0;
+}
+h4.arabic {
+font-family: "Scheheraza";
+font-size: 3.2em;
+line-height: 1.4em;
+letter-spacing: 1px;
+color: #000000;
+direction: rtl;
+text-align: right;
+font-weight: normal;
+margin-bottom: 9px;
+}
+@font-face{font-family:"Scheheraza";src:local("Scheherazade"),url(/static/fonts/Scheherazade.ttf) format("truetype");}
+</style>
+</head>
+<body>
+<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+<div class="container">
+<div class="navbar-header">
+<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+<span class="sr-only">Toggle navigation</span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+<a class="navbar-brand">QuranApp</a>
+</div>
+<div class="collapse navbar-collapse">
+<ul class="nav navbar-nav navbar-left">
+<li class="active"><a href="#about" data-toggle="tab" id="aboutTabNav">About</a></li>
+<li><a href="#browse" data-toggle="tab" id="browseTabNav">Browse</a></li>
+<li><a href="#review" data-toggle="tab" id="reviewTabNav">Review</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row row-offcanvas row-offcanvas-right">
+<div class="tab-content">
+<div class="tab-pane active" id="about">
+<h1>Welcome to QuranApp!</h1>
+<p>QuranApp allows you to easily create PDF, HTML and Word collections of various Ayats, allowing you to print them out and distribute them with ease.</p>
+<h2>Usage</h2>
+<p>In just a few minutes, you can create your own documents, no signup required. Just follow these steps: </p>
+<h3>1. Select</h3>
+<p>Use the <strong>Browse Quran</strong> link to view and select the Ayats you wish to add to your collection. Click on an Ayat to select it, or shift-click to select multiple.</p>
+<h3>2. Review</h3>
+<p>Use the <strong>Review</strong> link to review your selection and arrange it however you wish </p>
+<h3>3. Download &amp; Review</h3>
+<p>Just hit the download button to download the collection in your preferred format. PDF is intended for print &amp; distribution, while HTML is intended for storing locally and providing text you can copy into other programs. You can use the Word format to work with your collection in Microsoft Word, which is ideal for editing purposes.</p>
+<h2>Contact</h2>
+<p>For any comments or suggestions, please email <a href="mailto:m.hasnain.lakhani@gmail.com">m.hasnain.lakhani@gmail.com</a></p>
+<h2>Data Sources</h2>
+<p>All data was taken from <a href="http://tanzil.net/">tanzil.net</a>. The English translation is by Muhammad Taqi-ud-Din al-Hilali and Muhammad Muhsin Khan</p>
+<p><strong>Note:</strong> For Word file usage, please ensure the Scheherazade font is installed on your system. <a href="http://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=Scheherazade">It is available at this link.</a></p>
+<h2>Contribute</h2>
+<p>The code is available on <a href="https://github.com/mhlakhani/quranapp">Github</a>. Please contribute there or add issues for feature requests.</p>
+</div>
+<div class="tab-pane" id="browse">
+<div class="col-xs-3 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+<div class="list-group">
+<p class="list-group-item list-group-item-info">Surah #<strong data-bind="text: browseSuraNo"></strong> <strong data-bind="text: browseSuraName"></strong></p>
+<form class="form-vertical list-group-item" action="#" method="get">
+<strong>Go to Surah:</strong>
+<br>
+<br>
+<select class="form-control" id="browseSelectSurah" data-bind="options: browseSuraList, optionsText: 'text', value: browseSelectedSura, event: { change: onBrowseChangeSura }">
+</select>
+<br>
+</form>
+</div>
+</div>
+<div class="col-xs-12 col-sm-9">
+<h4 data-bind="text: browseSuraAyaHeader"></h4>
+<div class="row">
+<table class="table" id="browseAyaTable">
+<thead data-bind="if: hasBismillah">
+<tr>
+<td>
+<div class="list-group-item">
+<h4 class="arabic list-group-item-heading" data-bind="text: bismillah"></h4>
+<br>
+<p class="list-group-item-text"></p>
+</div>
+</td>
+</tr>
+</thead>
+<tbody class="list-group" data-bind="foreach: browseAyas, scroll: browsePage <= browsePages, scrollOptions: { loadFunc: onBrowseScrollDown }">
+<tr data-bind="click: $parent.onBrowseAyaClick">
+<td>
+<div class="list-group-item" data-bind="css: { 'list-group-item-info': selected}">
+<span class="badge" style="float: left" data-bind="text: ayaNo"></span>
+<h4 class="arabic list-group-item-heading" lang="ar" data-bind="text: arabic, attr: {id: 'browseAya' + index}"></h4>
+<br>
+<p class="list-group-item-text" data-bind="text: english"></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="tab-pane" id="review">
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+<div class="list-group">
+<p class="list-group-item list-group-item-info"><strong>Selection Options</strong></p>
+<form class="form-vertical list-group-item">
+<div class="form-group">
+<label for="reviewEditAyasByNumber">Add/Remove Ayas by Number</label>
+<input type="text" class="form-control" id="reviewEditAyasByNumber" placeholder="e.g. (1:2-6, 5:11 114)">
+</div>
+<button type="button" class="btn btn-primary" id="reviewAddAyasByNumberButton" data-bind="click: onReviewAddAyasByNumberClick">Add Ayas</button>
+<button type="button" class="btn btn-danger" id="reviewDeleteAyasByNumberButton" data-bind="click: onReviewDeleteAyasByNumberClick">Remove Ayas</button>
+<br class="clearfix" />
+<br>
+<div id="reviewEditAyasByNumberAlertPlaceholder">
+</div>
+</form>
+<div class="list-group-item">
+<button type="button" class="btn btn-danger" id="reviewRemoveSelectedItems" data-bind="click: onReviewRemoveSelectedItemsClick">Remove selected items</button>
+<br class="clearfix" />
+<br />
+<button type="button" class="btn btn-danger" id="reviewRemoveAllItems" data-bind="click: onReviewRemoveAllItemsClick">Remove all items</button>
+</div>
+<p class="list-group-item list-group-item-info"><strong>Output Options</strong></p>
+<form class="form-vertical list-group-item">
+<div class="checkbox">
+<label>
+<input type="checkbox" id="reviewIncludeArabic" data-bind="checked: reviewIncludeArabic">
+Include Arabic Verses
+</label>
+</div>
+<div class="checkbox">
+<label>
+<input type="checkbox" value="" id="reviewIncludeEnglish" data-bind="checked: reviewIncludeEnglish">
+Include English Translation
+</label>
+</div>
+</form>
+<p class="list-group-item list-group-item-info"><strong>Download Options</strong></p>
+<div class="list-group-item"><button type="button" class="btn btn-primary" id="reviewDownloadHTML" data-bind="click: onReviewDownloadHTMLClick">Download HTML</button></div>
+<div class="list-group-item"><button type="button" class="btn btn-primary" id="reviewDownloadPDF" data-bind="click: onReviewDownloadPDFClick">Download PDF</button></div>
+<div class="list-group-item"><button type="button" class="btn btn-primary" id="reviewDownloadWord" data-bind="click: onReviewDownloadWordClick">Download Word</button></div>
+</div>
+</div>
+<div class="col-xs-12 col-sm-9">
+<h4>Review Selection</h4>
+<div class="row" id="reviewAyaDiv">
+<table class="table" id="reviewAyaTable">
+<tbody class="list-group" data-bind="foreach: reviewAyas">
+<tr data-bind="click: $parent.onReviewAyaClick">
+<td>
+<div class="list-group-item" data-bind="css: { 'list-group-item-info': selected}">
+<span class="badge" style="float: left" data-bind="text: suraNoAyaNo"></span>
+<h4 class="arabic list-group-item-heading" lang="ar" data-bind="text: arabic, attr: {id: 'reviewAya' + index}"></h4>
+<br data-bind="click: $parent.onReviewAyaClick">
+<p class="list-group-item-text" data-bind="text: english"></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr>
+<footer>
+<p>&copy; Hasnain Lakhani 2014</p>
+</footer>
+</div>
+</body>
+</HTML>
